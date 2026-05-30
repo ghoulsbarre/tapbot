@@ -9,15 +9,25 @@ async def inline_tap(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not query:
         return
 
-    formatted = "/" + "_".join(query.lower().split())
+    words = "_".join(query.lower().split())
+    
+    option1 = "/" + words
+    option2 = "/tap_to_" + words
 
-    result = InlineQueryResultArticle(
-        id=uuid4(),
-        title=formatted,
-        input_message_content=InputTextMessageContent(formatted)
-    )
+    results = [
+        InlineQueryResultArticle(
+            id=uuid4(),
+            title=option1,
+            input_message_content=InputTextMessageContent(option1)
+        ),
+        InlineQueryResultArticle(
+            id=uuid4(),
+            title=option2,
+            input_message_content=InputTextMessageContent(option2)
+        ),
+    ]
 
-    await update.inline_query.answer([result])
+    await update.inline_query.answer(results)
 
 app = ApplicationBuilder().token(os.environ["TELEGRAM_BOT_TOKEN"]).build()
 app.add_handler(InlineQueryHandler(inline_tap))
